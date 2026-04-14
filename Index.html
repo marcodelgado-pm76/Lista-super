@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#7C3AED"/>
+<title>Lista del Super</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',sans-serif;background:#f8f4ff;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px}
+  button{cursor:pointer}
+  .header{background:linear-gradient(135deg,#7C3AED,#5B21B6);padding:20px 16px 16px;color:white}
+  .header-row{display:flex;justify-content:space-between;align-items:center}
+  .header h1{font-size:22px;font-weight:700}
+  .header p{font-size:13px;opacity:.85;margin-top:2px}
+  .tab-btn{padding:6px 12px;border-radius:20px;border:none;font-weight:600;font-size:12px;cursor:pointer}
+  .tab-btn.active{background:white;color:#7C3AED}
+  .tab-btn.inactive{background:rgba(255,255,255,.2);color:white}
+  .icon-btn{padding:6px 10px;border-radius:20px;border:none;background:rgba(255,255,255,.2);color:white;font-size:16px}
+  .progress-bar{background:rgba(255,255,255,.25);border-radius:10px;height:8px;overflow:hidden;margin-top:12px}
+  .progress-fill{background:white;height:100%;border-radius:10px;transition:width .4s}
+  .progress-label{font-size:12px;text-align:right;margin-top:4px;opacity:.85}
+  .tabs{display:flex;gap:6px;align-items:center}
+  .page{padding:16px}
+  .card{background:white;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(124,58,237,.1);margin-bottom:16px}
+  .card-title{font-size:13px;font-weight:600;color:#7C3AED;margin-bottom:10px}
+  .chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{padding:4px 10px;border-radius:20px;border-width:2px;border-style:solid;font-size:12px;font-weight:600}
+  .input-row{display:flex;gap:8px}
+  input[type=text]{flex:1;padding:10px 14px;border-radius:12px;border:1.5px solid #e5e7eb;font-size:15px;outline:none;width:100%}
+  .btn-add{padding:10px 16px;border-radius:12px;background:#7C3AED;color:white;border:none;font-weight:700;font-size:18px}
+  .btn-mic{padding:10px 14px;border-radius:12px;border:none;font-size:20px}
+  .btn-mic.off{background:#F3E8FF;color:#7C3AED}
+  .btn-mic.on{background:#EF4444;color:white;animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .listening-label{text-align:center;margin-top:8px;color:#EF4444;font-size:13px;font-weight:600}
+  .actions{display:flex;gap:8px;margin-bottom:16px}
+  .btn-clear-done{flex:1;padding:8px;border-radius:10px;background:#ECFDF5;color:#059669;border:1.5px solid #A7F3D0;font-size:13px;font-weight:600}
+  .btn-clear-all{flex:1;padding:8px;border-radius:10px;background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA;font-size:13px;font-weight:600}
+  .empty{text-align:center;padding:40px 0;color:#9CA3AF}
+  .empty .emoji{font-size:48px}
+  .empty p{font-size:16px;margin-top:8px}
+  .empty small{font-size:13px;margin-top:4px;display:block}
+  .group-label{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .group-name{font-weight:700;font-size:15px}
+  .group-count{font-size:12px;color:#9CA3AF}
+  .product-row{display:flex;align-items:center;gap:10px;background:white;border-radius:12px;padding:10px 14px;margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .product-row input[type=checkbox]{width:18px;height:18px}
+  .product-name{flex:1;font-size:15px}
+  .product-name.done{text-decoration:line-through;color:#9CA3AF}
+  .btn-del{background:none;border:none;color:#D1D5DB;font-size:18px;line-height:1}
+  /* COMPRA */
+  .filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+  .shop-group-header{color:white;padding:10px 14px;border-radius:12px 12px 0 0;font-weight:700;font-size:15px}
+  .shop-group-body{background:white;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px}
+  .shop-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #F3F4F6;cursor:pointer}
+  .shop-row.done-row{background:#F9FAFB}
+  .circle{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .circle.empty-c{border-width:2px;border-style:solid}
+  .circle.filled{color:white;font-size:14px}
+  .shop-row-name{font-size:16px}
+  .shop-row-name.done{color:#9CA3AF;text-decoration:line-through}
+  .btn-clear-bought{width:100%;padding:14px;border-radius:12px;background:#ECFDF5;color:#059669;border:1.5px solid #A7F3D0;font-size:15px;font-weight:700;margin-top:8px}
+  /* GESTIÓN */
+  .back-btn{background:rgba(255,255,255,.2);border:none;color:white;border-radius:10px;padding:6px 12px;font-size:18px}
+  .sup-row{display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:12px 16px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+  .sup-icon{font-size:22px}
+  .sup-name{flex:1;font-weight:600;font-size:15px;color:#111827}
+  .color-dot{width:16px;height:16px;border-radius:50%}
+  .btn-del-sup{background:#FEF2F2;border:none;color:#DC2626;border-radius:8px;padding:4px 10px;font-size:18px}
+  .label{font-size:13px;font-weight:600;color:#6B7280;margin-bottom:6px;margin-top:12px}
+  .icon-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+  .icon-opt{width:38px;height:38px;border-radius:10px;border-width:2px;border-style:solid;font-size:20px;background:white}
+  .color-grid{display:flex;gap:8px;flex-wrap:wrap}
+  .color-opt{width:30px;height:30px;border-radius:50%}
+  .btn-save{width:100%;padding:12px;border-radius:12px;background:#7C3AED;color:white;border:none;font-weight:700;font-size:15px;margin-top:16px}
+  .no-sups{text-align:center;padding:12px 0;color:#9CA3AF;font-size:14px}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const COLORES = ["#7C3AED","#0071CE","#E31837","#005DAA","#F7A800","#009B3A","#E67E22","#16A085","#C0392B","#2980B9"];
+const ICONOS  = ["🛒","🏪","📦","🌟","🍃","💰","🛍️","🧺","🏬","🏷️"];
+
+let state = {
+  productos: [],
+  supermercados: [
+    {id:1,nombre:"Walmart",color:"#0071CE",icono:"🛒"},
+    {id:2,nombre:"Chedraui",color:"#E31837",icono:"🏪"},
+    {id:3,nombre:"Costco",color:"#005DAA",icono:"📦"}
+  ],
+  supSelected: 1,
+  modo: "lista",      // lista | compra
+  vista: "main",      // main | gestion
+  filtroSup: "todos",
+  escuchando: false,
+  // form gestión
+  nuevoNombre: "",
+  nuevoIcono: "🛒",
+  nuevoColor: "#7C3AED"
+};
+
+function load() {
+  try {
+    const p = localStorage.getItem("ls_productos");
+    const s = localStorage.getItem("ls_sups");
+    if (p) state.productos = JSON.parse(p);
+    if (s) { state.supermercados = JSON.parse(s); state.supSelected = state.supermercados[0]?.id || null; }
+  } catch(e){}
+}
+
+function save() {
+  localStorage.setItem("ls_productos", JSON.stringify(state.productos));
+  localStorage.setItem("ls_sups", JSON.stringify(state.supermercados));
+}
+
+let rec = null;
+
+function toggleVoz() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert("Usa Chrome para reconocimiento de voz."); return; }
+  if (state.escuchando) { rec?.stop(); state.escuchando = false; render(); return; }
+  rec = new SR();
+  rec.lang = "es-MX";
+  rec.continuous = false;
+  rec.interimResults = false;
+  rec.onresult = e => { agregarProducto(e.results[0][0].transcript); };
+  rec.onend = () => { state.escuchando = false; render(); };
+  rec.onerror = () => { state.escuchando = false; render(); };
+  rec.start();
+  state.escuchando = true;
+  render();
+}
+
+function agregarProducto(nombre) {
+  const n = nombre.trim();
+  if (!n || !state.supSelected) return;
+  state.productos.push({id: Date.now(), nombre: n, supId: state.supSelected, comprado: false});
+  document.getElementById("inp-producto").value = "";
+  save(); render();
+}
+
+function toggleComprado(id) {
+  const p = state.productos.find(x => x.id === id);
+  if (p) p.comprado = !p.comprado;
+  save(); render();
+}
+
+function eliminarProducto(id) {
+  state.productos = state.productos.filter(x => x.id !== id);
+  save(); render();
+}
+
+function limpiarComprados() {
+  state.productos = state.productos.filter(x => !x.comprado);
+  save(); render();
+}
+
+function limpiarTodo() {
+  if (confirm("¿Borrar toda la lista?")) { state.productos = []; save(); render(); }
+}
+
+function agregarSup() {
+  const n = state.nuevoNombre.trim();
+  if (!n) return;
+  const nuevo = {id: Date.now(), nombre: n, color: state.nuevoColor, icono: state.nuevoIcono};
+  state.supermercados.push(nuevo);
+  state.supSelected = nuevo.id;
+  state.nuevoNombre = "";
+  save(); render();
+  document.getElementById("inp-sup")?.focus();
+}
+
+function eliminarSup(id) {
+  const enUso = state.productos.some(p => p.supId === id);
+  if (enUso && !confirm("Este supermercado tiene productos. ¿Eliminar de todos modos?")) return;
+  state.supermercados = state.supermercados.filter(x => x.id !== id);
+  if (enUso) state.productos = state.productos.filter(x => x.supId !== id);
+  if (!state.supermercados.find(s => s.id === state.supSelected))
+    state.supSelected = state.supermercados[0]?.id || null;
+  save(); render();
+}
+
+function supById(id) { return state.supermercados.find(s => s.id === id); }
+
+function grupos(prods) {
+  const ids = [...new Set(prods.map(p => p.supId))].filter(id => supById(id));
+  return ids.map(id => ({ sup: supById(id), items: prods.filter(p => p.supId === id) }));
+}
+
+// ── RENDER ──
+function render() {
+  const app = document.getElementById("app");
+  app.innerHTML = state.vista === "gestion" ? renderGestion() : renderMain();
+  attachEvents();
+}
+
+function renderMain() {
+  const total = state.productos.length;
+  const done  = state.productos.filter(p => p.comprado).length;
+  const pct   = total ? Math.round((done / total) * 100) : 0;
+
+  const progressHTML = total ? `
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-label">${pct}% listo</div>` : "";
+
+  return `
+  <div class="header">
+    <div class="header-row">
+      <div>
+        <h1>🛒 Lista del Super</h1>
+        <p>${total === 0 ? "Lista vacía" : `${done} de ${total} productos`}</p>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn ${state.modo==='lista'?'active':'inactive'}" onclick="state.modo='lista';render()">Lista</button>
+        <button class="tab-btn ${state.modo==='compra'?'active':'inactive'}" onclick="state.modo='compra';render()">🏃 Súper</button>
+        <button class="icon-btn" onclick="state.vista='gestion';render()">⚙️</button>
+      </div>
+    </div>
+    ${progressHTML}
+  </div>
+  ${state.modo === 'lista' ? renderLista() : renderCompra()}`;
+}
+
+function renderLista() {
+  const sups = state.supermercados;
+  const total = state.productos.length;
+  const done  = state.productos.filter(p => p.comprado).length;
+
+  const chipsHTML = sups.length === 0
+    ? `<p class="no-sups">Primero agrega un supermercado en ⚙️</p>`
+    : `<div class="chip-row">
+        ${sups.map(s => `
+          <button class="chip" onclick="state.supSelected=${s.id};render()"
+            style="border-color:${s.color};background:${state.supSelected===s.id?s.color:'white'};color:${state.supSelected===s.id?'white':s.color}">
+            ${s.icono} ${s.nombre}
+          </button>`).join("")}
+       </div>
+       <div class="input-row">
+         <input id="inp-producto" type="text" placeholder="Nombre del producto..." onkeydown="if(event.key==='Enter')agregarProducto(this.value)"/>
+         <button class="btn-add" onclick="agregarProducto(document.getElementById('inp-producto').value)">+</button>
+         <button class="btn-mic ${state.escuchando?'on':'off'}" onclick="toggleVoz()">${state.escuchando?'⏹':'🎤'}</button>
+       </div>
+       ${state.escuchando ? '<p class="listening-label">🔴 Escuchando... habla ahora</p>' : ''}`;
+
+  const acciones = total > 0 ? `
+    <div class="actions">
+      ${done > 0 ? `<button class="btn-clear-done" onclick="limpiarComprados()">✅ Quitar comprados</button>` : ""}
+      <button class="btn-clear-all" onclick="limpiarTodo()">🗑 Borrar todo</button>
+    </div>` : "";
+
+  const gs = grupos(state.productos);
+  const listaHTML = gs.length === 0
+    ? `<div class="empty"><div class="emoji">🧺</div><p>La lista está vacía</p><small>Agrega productos con el micrófono o escribiendo</small></div>`
+    : gs.map(({sup, items}) => `
+        <div style="margin-bottom:16px">
+          <div class="group-label">
+            <div class="dot" style="background:${sup.color}"></div>
+            <span class="group-name" style="color:${sup.color}">${sup.icono} ${sup.nombre}</span>
+            <span class="group-count">(${items.length})</span>
+          </div>
+          ${items.map(p => `
+            <div class="product-row" style="border-left:4px solid ${sup.color}">
+              <input type="checkbox" ${p.comprado?'checked':''} onchange="toggleComprado(${p.id})" style="accent-color:${sup.color}"/>
+              <span class="product-name ${p.comprado?'done':''}">${p.nombre}</span>
+              <button class="btn-del" onclick="eliminarProducto(${p.id})">×</button>
+            </div>`).join("")}
+        </div>`).join("");
+
+  return `
+    <div class="page">
+      <div class="card">
+        <div class="card-title">Agregar producto</div>
+        ${chipsHTML}
+      </div>
+      ${acciones}
+      ${listaHTML}
+    </div>`;
+}
+
+function renderCompra() {
+  const supsMencionados = [...new Set(state.productos.map(p => p.supId))].filter(id => supById(id));
+  const prods = state.filtroSup === "todos" ? state.productos : state.productos.filter(p => p.supId === state.filtroSup);
+  const gs = grupos(prods);
+  const done = state.productos.filter(p => p.comprado).length;
+
+  const filtros = supsMencionados.length > 1 ? `
+    <div class="filter-row">
+      <button class="chip" onclick="state.filtroSup='todos';render()"
+        style="border-color:#7C3AED;background:${state.filtroSup==='todos'?'#7C3AED':'white'};color:${state.filtroSup==='todos'?'white':'#7C3AED'}">Todos</button>
+      ${supsMencionados.map(id => { const s=supById(id); return `
+        <button class="chip" onclick="state.filtroSup=${id};render()"
+          style="border-color:${s.color};background:${state.filtroSup===id?s.color:'white'};color:${state.filtroSup===id?'white':s.color}">
+          ${s.icono} ${s.nombre}
+        </button>`;}).join("")}
+    </div>` : "";
+
+  const listaHTML = gs.length === 0
+    ? `<div class="empty"><div class="emoji">🎉</div><p>¡Todo comprado!</p></div>`
+    : gs.map(({sup, items}) => {
+        const pend = items.filter(i => !i.comprado);
+        const hechos = items.filter(i => i.comprado);
+        return `
+          <div>
+            <div class="shop-group-header" style="background:${sup.color}">${sup.icono} ${sup.nombre} — ${hechos.length}/${items.length}</div>
+            <div class="shop-group-body">
+              ${pend.map(p => `
+                <div class="shop-row" onclick="toggleComprado(${p.id})">
+                  <div class="circle empty-c" style="border-color:${sup.color}"></div>
+                  <span class="shop-row-name">${p.nombre}</span>
+                </div>`).join("")}
+              ${hechos.map(p => `
+                <div class="shop-row done-row" onclick="toggleComprado(${p.id})">
+                  <div class="circle filled" style="background:${sup.color}">✓</div>
+                  <span class="shop-row-name done">${p.nombre}</span>
+                </div>`).join("")}
+            </div>
+          </div>`;
+      }).join("");
+
+  return `
+    <div class="page">
+      ${filtros}
+      ${listaHTML}
+      ${done > 0 ? `<button class="btn-clear-bought" onclick="limpiarComprados()">✅ Quitar ${done} comprado${done>1?'s':''}</button>` : ""}
+    </div>`;
+}
+
+function renderGestion() {
+  const sups = state.supermercados;
+  return `
+  <div class="header">
+    <div class="header-row">
+      <button class="back-btn" onclick="state.vista='main';render()">←</button>
+      <h1 style="flex:1;margin-left:12px">🏪 Mis Supermercados</h1>
+    </div>
+  </div>
+  <div class="page">
+    ${sups.length === 0
+      ? `<div class="empty"><div class="emoji">🏪</div><p>No hay supermercados</p></div>`
+      : sups.map(s => `
+          <div class="sup-row" style="border-left:5px solid ${s.color}">
+            <span class="sup-icon">${s.icono}</span>
+            <span class="sup-name">${s.nombre}</span>
+            <div class="color-dot" style="background:${s.color}"></div>
+            <button class="btn-del-sup" onclick="eliminarSup(${s.id})">×</button>
+          </div>`).join("")}
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">➕ Nuevo supermercado</div>
+      <input id="inp-sup" type="text" placeholder="Nombre (ej. La Comer)"
+        value="${state.nuevoNombre}"
+        oninput="state.nuevoNombre=this.value"
+        onkeydown="if(event.key==='Enter')agregarSup()"
+        style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #e5e7eb;font-size:15px;outline:none"/>
+
+      <div class="label">Icono</div>
+      <div class="icon-grid">
+        ${ICONOS.map(ic => `
+          <button class="icon-opt" onclick="state.nuevoIcono='${ic}';render()"
+            style="border-color:${state.nuevoIcono===ic?'#7C3AED':'#e5e7eb'};background:${state.nuevoIcono===ic?'#F3E8FF':'white'}">${ic}</button>`).join("")}
+      </div>
+
+      <div class="label">Color</div>
+      <div class="color-grid">
+        ${COLORES.map(c => `
+          <button class="color-opt" onclick="state.nuevoColor='${c}';render()"
+            style="background:${c};border:${state.nuevoColor===c?'3px solid #111':'2px solid transparent'}"></button>`).join("")}
+      </div>
+
+      <button class="btn-save" onclick="agregarSup()">Agregar supermercado</button>
+    </div>
+  </div>`;
+}
+
+function attachEvents() {
+  // input producto — restaurar valor si hay texto en memoria
+  const inp = document.getElementById("inp-producto");
+  if (inp) inp.addEventListener("input", e => {});
+}
+
+load();
+render();
+</script>
+</body>
+</html>
