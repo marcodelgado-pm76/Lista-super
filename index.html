@@ -6,89 +6,105 @@
 <meta name="theme-color" content="#7C3AED"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Lista Super"/>
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%237C3AED'/%3E%3Ctext y='.9em' font-size='72' x='12'%3E🛒%3C/text%3E%3C/svg%3E"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%237C3AED'/%3E%3Ctext y='.9em' font-size='72' x='12'%3E🛒%3C/text%3E%3C/svg%3E"/>
-<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Lista+del+Super%22%2C%22short_name%22%3A%22Lista+Super%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%237C3AED%22%2C%22theme_color%22%3A%22%237C3AED%22%7D"/>
 <title>Lista del Super</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',sans-serif;background:#f8f4ff;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px}
-  button{cursor:pointer}
-  .header{background:linear-gradient(135deg,#7C3AED,#5B21B6);padding:20px 16px 16px;color:white}
-  .header-row{display:flex;justify-content:space-between;align-items:center}
-  .header h1{font-size:22px;font-weight:700}
-  .header p{font-size:13px;opacity:.85;margin-top:2px}
-  .tab-btn{padding:6px 12px;border-radius:20px;border:none;font-weight:600;font-size:12px;cursor:pointer}
-  .tab-btn.active{background:white;color:#7C3AED}
-  .tab-btn.inactive{background:rgba(255,255,255,.2);color:white}
-  .icon-btn{padding:6px 10px;border-radius:20px;border:none;background:rgba(255,255,255,.2);color:white;font-size:16px}
-  .progress-bar{background:rgba(255,255,255,.25);border-radius:10px;height:8px;overflow:hidden;margin-top:12px}
-  .progress-fill{background:white;height:100%;border-radius:10px;transition:width .4s}
-  .progress-label{font-size:12px;text-align:right;margin-top:4px;opacity:.85}
-  .tabs{display:flex;gap:6px;align-items:center}
-  .page{padding:16px}
-  .card{background:white;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(124,58,237,.1);margin-bottom:16px}
-  .card-title{font-size:13px;font-weight:600;color:#7C3AED;margin-bottom:10px}
-  .chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-  .chip{padding:4px 10px;border-radius:20px;border-width:2px;border-style:solid;font-size:12px;font-weight:600}
-  .input-row{display:flex;gap:8px}
-  input[type=text]{flex:1;padding:10px 14px;border-radius:12px;border:1.5px solid #e5e7eb;font-size:15px;outline:none;width:100%}
-  .btn-add{padding:10px 16px;border-radius:12px;background:#7C3AED;color:white;border:none;font-weight:700;font-size:18px}
-  .btn-mic{padding:10px 14px;border-radius:12px;border:none;font-size:20px}
-  .btn-mic.off{background:#F3E8FF;color:#7C3AED}
-  .btn-mic.on{background:#EF4444;color:white;animation:pulse 1s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-  .listening-label{text-align:center;margin-top:8px;color:#EF4444;font-size:13px;font-weight:600}
-  .actions{display:flex;gap:8px;margin-bottom:16px}
-  .btn-clear-done{flex:1;padding:8px;border-radius:10px;background:#ECFDF5;color:#059669;border:1.5px solid #A7F3D0;font-size:13px;font-weight:600}
-  .btn-clear-all{flex:1;padding:8px;border-radius:10px;background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA;font-size:13px;font-weight:600}
-  .empty{text-align:center;padding:40px 0;color:#9CA3AF}
-  .empty .emoji{font-size:48px}
-  .empty p{font-size:16px;margin-top:8px}
-  .empty small{font-size:13px;margin-top:4px;display:block}
-  .group-label{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .dot{width:12px;height:12px;border-radius:50%}
-  .group-name{font-weight:700;font-size:15px}
-  .group-count{font-size:12px;color:#9CA3AF}
-  .product-row{display:flex;align-items:center;gap:10px;background:white;border-radius:12px;padding:10px 14px;margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-  .product-row input[type=checkbox]{width:18px;height:18px}
-  .product-name{flex:1;font-size:15px}
-  .product-name.done{text-decoration:line-through;color:#9CA3AF}
-  .btn-del{background:none;border:none;color:#D1D5DB;font-size:18px;line-height:1}
-  /* COMPRA */
-  .filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-  .shop-group-header{color:white;padding:10px 14px;border-radius:12px 12px 0 0;font-weight:700;font-size:15px}
-  .shop-group-body{background:white;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px}
-  .shop-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #F3F4F6;cursor:pointer}
-  .shop-row.done-row{background:#F9FAFB}
-  .circle{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-  .circle.empty-c{border-width:2px;border-style:solid}
-  .circle.filled{color:white;font-size:14px}
-  .shop-row-name{font-size:16px}
-  .shop-row-name.done{color:#9CA3AF;text-decoration:line-through}
-  .btn-clear-bought{width:100%;padding:14px;border-radius:12px;background:#ECFDF5;color:#059669;border:1.5px solid #A7F3D0;font-size:15px;font-weight:700;margin-top:8px}
-  /* GESTIÓN */
-  .back-btn{background:rgba(255,255,255,.2);border:none;color:white;border-radius:10px;padding:6px 12px;font-size:18px}
-  .sup-row{display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:12px 16px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-  .sup-icon{font-size:22px}
-  .sup-name{flex:1;font-weight:600;font-size:15px;color:#111827}
-  .color-dot{width:16px;height:16px;border-radius:50%}
-  .btn-del-sup{background:#FEF2F2;border:none;color:#DC2626;border-radius:8px;padding:4px 10px;font-size:18px}
-  .label{font-size:13px;font-weight:600;color:#6B7280;margin-bottom:6px;margin-top:12px}
-  .icon-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-  .icon-opt{width:38px;height:38px;border-radius:10px;border-width:2px;border-style:solid;font-size:20px;background:white}
-  .color-grid{display:flex;gap:8px;flex-wrap:wrap}
-  .color-opt{width:30px;height:30px;border-radius:50%}
-  .btn-save{width:100%;padding:12px;border-radius:12px;background:#7C3AED;color:white;border:none;font-weight:700;font-size:15px;margin-top:16px}
-  .no-sups{text-align:center;padding:12px 0;color:#9CA3AF;font-size:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f8f4ff;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px}
+button{cursor:pointer}
+.header{background:linear-gradient(135deg,#7C3AED,#5B21B6);padding:20px 16px 16px;color:white}
+.header-row{display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:22px;font-weight:700}
+.header p{font-size:13px;opacity:.85;margin-top:2px}
+.tab-btn{padding:6px 12px;border-radius:20px;border:none;font-weight:600;font-size:12px}
+.tab-btn.active{background:white;color:#7C3AED}
+.tab-btn.inactive{background:rgba(255,255,255,.2);color:white}
+.icon-btn{padding:6px 10px;border-radius:20px;border:none;background:rgba(255,255,255,.2);color:white;font-size:16px}
+.progress-bar{background:rgba(255,255,255,.25);border-radius:10px;height:8px;overflow:hidden;margin-top:12px}
+.progress-fill{background:white;height:100%;border-radius:10px;transition:width .4s}
+.progress-label{font-size:12px;text-align:right;margin-top:4px;opacity:.85}
+.tabs{display:flex;gap:6px;align-items:center}
+.page{padding:16px}
+.card{background:white;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(124,58,237,.1);margin-bottom:16px}
+.card-title{font-size:13px;font-weight:600;color:#7C3AED;margin-bottom:10px}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{padding:4px 10px;border-radius:20px;border-width:2px;border-style:solid;font-size:12px;font-weight:600}
+.input-row{display:flex;gap:8px;margin-bottom:8px}
+.input-row2{display:flex;gap:8px}
+input[type=text],input[type=number]{padding:10px 14px;border-radius:12px;border:1.5px solid #e5e7eb;font-size:15px;outline:none}
+.inp-nombre{flex:1}
+.inp-cantidad{width:80px;text-align:center}
+.btn-add{padding:10px 16px;border-radius:12px;background:#7C3AED;color:white;border:none;font-weight:700;font-size:18px}
+.btn-mic{padding:10px 14px;border-radius:12px;border:none;font-size:20px}
+.btn-mic.off{background:#F3E8FF;color:#7C3AED}
+.btn-mic.on{background:#EF4444;color:white;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.listening-label{text-align:center;margin-top:8px;color:#EF4444;font-size:13px;font-weight:600}
+.actions{display:flex;gap:8px;margin-bottom:16px}
+.btn-clear-done{flex:1;padding:8px;border-radius:10px;background:#ECFDF5;color:#059669;border:1.5px solid #A7F3D0;font-size:13px;font-weight:600}
+.btn-clear-all{flex:1;padding:8px;border-radius:10px;background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA;font-size:13px;font-weight:600}
+.empty{text-align:center;padding:40px 0;color:#9CA3AF}
+.empty .emoji{font-size:48px}
+.empty p{font-size:16px;margin-top:8px}
+.empty small{font-size:13px;margin-top:4px;display:block}
+.group-label{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.group-name{font-weight:700;font-size:15px}
+.group-count{font-size:12px;color:#9CA3AF}
+/* Producto normal */
+.product-row{background:white;border-radius:12px;margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
+.product-main{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.product-main input[type=checkbox]{width:18px;height:18px;flex-shrink:0}
+.product-name{flex:1;font-size:15px}
+.product-name.done{text-decoration:line-through;color:#9CA3AF}
+.product-qty{font-size:12px;font-weight:600;padding:2px 8px;border-radius:10px;color:white;margin-right:4px;flex-shrink:0}
+.btn-edit{background:none;border:none;color:#A78BFA;font-size:16px;padding:2px 4px}
+.btn-del{background:none;border:none;color:#D1D5DB;font-size:18px;line-height:1}
+/* Edit inline */
+.product-edit{padding:10px 14px;background:#F5F3FF;border-top:1px solid #E9D5FF}
+.edit-label{font-size:11px;font-weight:600;color:#7C3AED;margin-bottom:4px}
+.edit-field{width:100%;padding:8px 12px;border-radius:10px;border:1.5px solid #C4B5FD;font-size:14px;outline:none;margin-bottom:8px}
+.edit-row{display:flex;gap:8px;margin-bottom:8px}
+.edit-row .edit-field{margin-bottom:0}
+.edit-actions{display:flex;gap:8px}
+.btn-save-edit{flex:1;padding:8px;border-radius:10px;background:#7C3AED;color:white;border:none;font-weight:600;font-size:13px}
+.btn-cancel-edit{flex:1;padding:8px;border-radius:10px;background:#F3F4F6;color:#6B7280;border:none;font-weight:600;font-size:13px}
+/* Sup selector en edit */
+.sup-mini-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.sup-mini{padding:3px 8px;border-radius:12px;border-width:2px;border-style:solid;font-size:11px;font-weight:600}
+/* COMPRA */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.shop-group-header{color:white;padding:10px 14px;border-radius:12px 12px 0 0;font-weight:700;font-size:15px}
+.shop-group-body{background:white;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:20px}
+.shop-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #F3F4F6;cursor:pointer}
+.shop-row.done-row{background:#F9FAFB}
+.circle{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.circle.empty-c{border-width:2px;border-style:solid}
+.circle.filled{color:white;font-size:14px}
+.shop-row-name{font-size:16px;flex:1}
+.shop-row-name.done{color:#9CA3AF;text-decoration:line-through}
+.shop-qty{font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;color:white}
+.btn-clear-bought{width:100%;padding:14px;border-radius:12px;background:#ECFDF5;color:#059669;border:1.5px solid #A7F3D0;font-size:15px;font-weight:700;margin-top:8px}
+/* GESTIÓN */
+.back-btn{background:rgba(255,255,255,.2);border:none;color:white;border-radius:10px;padding:6px 12px;font-size:18px}
+.sup-row{display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:12px 16px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.sup-icon{font-size:22px}
+.sup-name{flex:1;font-weight:600;font-size:15px;color:#111827}
+.color-dot{width:16px;height:16px;border-radius:50%}
+.btn-del-sup{background:#FEF2F2;border:none;color:#DC2626;border-radius:8px;padding:4px 10px;font-size:18px}
+.label{font-size:13px;font-weight:600;color:#6B7280;margin-bottom:6px;margin-top:12px}
+.icon-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.icon-opt{width:38px;height:38px;border-radius:10px;border-width:2px;border-style:solid;font-size:20px;background:white}
+.color-grid{display:flex;gap:8px;flex-wrap:wrap}
+.color-opt{width:30px;height:30px;border-radius:50%}
+.btn-save{width:100%;padding:12px;border-radius:12px;background:#7C3AED;color:white;border:none;font-weight:700;font-size:15px;margin-top:16px}
+.no-sups{text-align:center;padding:12px 0;color:#9CA3AF;font-size:14px}
 </style>
 </head>
 <body>
-
 <div id="app"></div>
-
 <script>
 const COLORES = ["#7C3AED","#0071CE","#E31837","#005DAA","#F7A800","#009B3A","#E67E22","#16A085","#C0392B","#2980B9"];
 const ICONOS  = ["🛒","🏪","📦","🌟","🍃","💰","🛍️","🧺","🏬","🏷️"];
@@ -101,14 +117,12 @@ let state = {
     {id:3,nombre:"Costco",color:"#005DAA",icono:"📦"}
   ],
   supSelected: 1,
-  modo: "lista",      // lista | compra
-  vista: "main",      // main | gestion
+  modo: "lista",
+  vista: "main",
   filtroSup: "todos",
   escuchando: false,
-  // form gestión
-  nuevoNombre: "",
-  nuevoIcono: "🛒",
-  nuevoColor: "#7C3AED"
+  editandoId: null,
+  nuevoNombre:"", nuevoIcono:"🛒", nuevoColor:"#7C3AED"
 };
 
 function load() {
@@ -117,228 +131,255 @@ function load() {
     const s = localStorage.getItem("ls_sups");
     if (p) state.productos = JSON.parse(p);
     if (s) { state.supermercados = JSON.parse(s); state.supSelected = state.supermercados[0]?.id || null; }
-  } catch(e){}
+    else state.supSelected = state.supermercados[0]?.id || null;
+  } catch(e){ state.supSelected = state.supermercados[0]?.id || null; }
 }
-
 function save() {
   localStorage.setItem("ls_productos", JSON.stringify(state.productos));
   localStorage.setItem("ls_sups", JSON.stringify(state.supermercados));
 }
 
 let rec = null;
-
 function toggleVoz() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { alert("Usa Chrome para reconocimiento de voz."); return; }
-  if (state.escuchando) { rec?.stop(); state.escuchando = false; render(); return; }
-  rec = new SR();
-  rec.lang = "es-MX";
-  rec.continuous = false;
-  rec.interimResults = false;
-  rec.onresult = e => { agregarProducto(e.results[0][0].transcript); };
-  rec.onend = () => { state.escuchando = false; render(); };
-  rec.onerror = () => { state.escuchando = false; render(); };
-  rec.start();
-  state.escuchando = true;
-  render();
+  if (state.escuchando) { rec?.stop(); state.escuchando=false; render(); return; }
+  rec = new SR(); rec.lang="es-MX"; rec.continuous=false; rec.interimResults=false;
+  rec.onresult = e => {
+    const txt = e.results[0][0].transcript;
+    const inp = document.getElementById("inp-nombre");
+    if (inp) inp.value = txt;
+    state.escuchando = false; render();
+    setTimeout(() => document.getElementById("inp-nombre")?.focus(), 100);
+  };
+  rec.onend = () => { state.escuchando=false; render(); };
+  rec.onerror = () => { state.escuchando=false; render(); };
+  rec.start(); state.escuchando=true; render();
 }
 
-function agregarProducto(nombre) {
-  const n = nombre.trim();
+function agregarProducto() {
+  const n = document.getElementById("inp-nombre")?.value.trim();
+  const c = document.getElementById("inp-cantidad")?.value.trim();
   if (!n || !state.supSelected) return;
-  state.productos.push({id: Date.now(), nombre: n, supId: state.supSelected, comprado: false});
-  document.getElementById("inp-producto").value = "";
+  state.productos.push({id:Date.now(), nombre:n, cantidad:c||"", supId:state.supSelected, comprado:false});
   save(); render();
+  setTimeout(()=>{ document.getElementById("inp-nombre")?.focus(); }, 50);
 }
 
 function toggleComprado(id) {
-  const p = state.productos.find(x => x.id === id);
-  if (p) p.comprado = !p.comprado;
+  const p = state.productos.find(x=>x.id===id);
+  if (p) p.comprado=!p.comprado;
   save(); render();
 }
-
 function eliminarProducto(id) {
-  state.productos = state.productos.filter(x => x.id !== id);
+  state.productos = state.productos.filter(x=>x.id!==id);
   save(); render();
 }
+function limpiarComprados() { state.productos=state.productos.filter(x=>!x.comprado); save(); render(); }
+function limpiarTodo() { if(confirm("¿Borrar toda la lista?")){ state.productos=[]; save(); render(); } }
 
-function limpiarComprados() {
-  state.productos = state.productos.filter(x => !x.comprado);
-  save(); render();
+function toggleEditar(id) {
+  state.editandoId = state.editandoId===id ? null : id;
+  render();
+  if (state.editandoId===id) setTimeout(()=>document.getElementById("edit-nombre-"+id)?.focus(),50);
 }
 
-function limpiarTodo() {
-  if (confirm("¿Borrar toda la lista?")) { state.productos = []; save(); render(); }
+function guardarEdicion(id) {
+  const p = state.productos.find(x=>x.id===id);
+  if (!p) return;
+  const n = document.getElementById("edit-nombre-"+id)?.value.trim();
+  const c = document.getElementById("edit-cantidad-"+id)?.value.trim();
+  const s = document.getElementById("edit-sup-"+id)?.value;
+  if (n) p.nombre = n;
+  p.cantidad = c||"";
+  if (s) p.supId = parseInt(s);
+  state.editandoId = null;
+  save(); render();
 }
 
 function agregarSup() {
   const n = state.nuevoNombre.trim();
   if (!n) return;
-  const nuevo = {id: Date.now(), nombre: n, color: state.nuevoColor, icono: state.nuevoIcono};
+  const nuevo = {id:Date.now(), nombre:n, color:state.nuevoColor, icono:state.nuevoIcono};
   state.supermercados.push(nuevo);
   state.supSelected = nuevo.id;
   state.nuevoNombre = "";
   save(); render();
-  document.getElementById("inp-sup")?.focus();
 }
-
 function eliminarSup(id) {
-  const enUso = state.productos.some(p => p.supId === id);
-  if (enUso && !confirm("Este supermercado tiene productos. ¿Eliminar de todos modos?")) return;
-  state.supermercados = state.supermercados.filter(x => x.id !== id);
-  if (enUso) state.productos = state.productos.filter(x => x.supId !== id);
-  if (!state.supermercados.find(s => s.id === state.supSelected))
-    state.supSelected = state.supermercados[0]?.id || null;
+  const enUso = state.productos.some(p=>p.supId===id);
+  if (enUso && !confirm("Este supermercado tiene productos. ¿Eliminar?")) return;
+  state.supermercados = state.supermercados.filter(x=>x.id!==id);
+  if (enUso) state.productos = state.productos.filter(x=>x.supId!==id);
+  if (!state.supermercados.find(s=>s.id===state.supSelected))
+    state.supSelected = state.supermercados[0]?.id||null;
   save(); render();
 }
 
-function supById(id) { return state.supermercados.find(s => s.id === id); }
-
-function grupos(prods) {
-  const ids = [...new Set(prods.map(p => p.supId))].filter(id => supById(id));
-  return ids.map(id => ({ sup: supById(id), items: prods.filter(p => p.supId === id) }));
+function supById(id){ return state.supermercados.find(s=>s.id===id); }
+function grupos(prods){
+  const ids=[...new Set(prods.map(p=>p.supId))].filter(id=>supById(id));
+  return ids.map(id=>({sup:supById(id), items:prods.filter(p=>p.supId===id)}));
 }
 
-// ── RENDER ──
 function render() {
-  const app = document.getElementById("app");
-  app.innerHTML = state.vista === "gestion" ? renderGestion() : renderMain();
-  attachEvents();
+  document.getElementById("app").innerHTML = state.vista==="gestion" ? renderGestion() : renderMain();
 }
 
 function renderMain() {
-  const total = state.productos.length;
-  const done  = state.productos.filter(p => p.comprado).length;
-  const pct   = total ? Math.round((done / total) * 100) : 0;
-
+  const total=state.productos.length, done=state.productos.filter(p=>p.comprado).length;
+  const pct=total?Math.round((done/total)*100):0;
   const progressHTML = total ? `
     <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
     <div class="progress-label">${pct}% listo</div>` : "";
-
   return `
   <div class="header">
     <div class="header-row">
-      <div>
-        <h1>🛒 Lista del Super</h1>
-        <p>${total === 0 ? "Lista vacía" : `${done} de ${total} productos`}</p>
-      </div>
+      <div><h1>🛒 Lista del Super</h1>
+        <p>${total===0?"Lista vacía":`${done} de ${total} productos`}</p></div>
       <div class="tabs">
         <button class="tab-btn ${state.modo==='lista'?'active':'inactive'}" onclick="state.modo='lista';render()">Lista</button>
         <button class="tab-btn ${state.modo==='compra'?'active':'inactive'}" onclick="state.modo='compra';render()">🏃 Súper</button>
         <button class="icon-btn" onclick="state.vista='gestion';render()">⚙️</button>
       </div>
-    </div>
-    ${progressHTML}
+    </div>${progressHTML}
   </div>
-  ${state.modo === 'lista' ? renderLista() : renderCompra()}`;
+  ${state.modo==='lista'?renderLista():renderCompra()}`;
 }
 
 function renderLista() {
-  const sups = state.supermercados;
-  const total = state.productos.length;
-  const done  = state.productos.filter(p => p.comprado).length;
-
-  const chipsHTML = sups.length === 0
+  const sups=state.supermercados, total=state.productos.length, done=state.productos.filter(p=>p.comprado).length;
+  const inputArea = sups.length===0
     ? `<p class="no-sups">Primero agrega un supermercado en ⚙️</p>`
-    : `<div class="chip-row">
-        ${sups.map(s => `
-          <button class="chip" onclick="state.supSelected=${s.id};render()"
-            style="border-color:${s.color};background:${state.supSelected===s.id?s.color:'white'};color:${state.supSelected===s.id?'white':s.color}">
-            ${s.icono} ${s.nombre}
-          </button>`).join("")}
-       </div>
+    : `<div class="chip-row">${sups.map(s=>`
+        <button class="chip" onclick="state.supSelected=${s.id};render()"
+          style="border-color:${s.color};background:${state.supSelected===s.id?s.color:'white'};color:${state.supSelected===s.id?'white':s.color}">
+          ${s.icono} ${s.nombre}</button>`).join("")}</div>
        <div class="input-row">
-         <input id="inp-producto" type="text" placeholder="Nombre del producto..." onkeydown="if(event.key==='Enter')agregarProducto(this.value)"/>
-         <button class="btn-add" onclick="agregarProducto(document.getElementById('inp-producto').value)">+</button>
+         <input id="inp-nombre" type="text" class="inp-nombre" placeholder="Producto..." onkeydown="if(event.key==='Enter')agregarProducto()"/>
+         <input id="inp-cantidad" type="text" class="inp-cantidad" placeholder="Cant." onkeydown="if(event.key==='Enter')agregarProducto()"/>
+       </div>
+       <div class="input-row2">
+         <button class="btn-add" style="flex:1" onclick="agregarProducto()">+ Agregar</button>
          <button class="btn-mic ${state.escuchando?'on':'off'}" onclick="toggleVoz()">${state.escuchando?'⏹':'🎤'}</button>
        </div>
-       ${state.escuchando ? '<p class="listening-label">🔴 Escuchando... habla ahora</p>' : ''}`;
+       ${state.escuchando?'<p class="listening-label">🔴 Escuchando...</p>':''}`;
 
-  const acciones = total > 0 ? `
-    <div class="actions">
-      ${done > 0 ? `<button class="btn-clear-done" onclick="limpiarComprados()">✅ Quitar comprados</button>` : ""}
-      <button class="btn-clear-all" onclick="limpiarTodo()">🗑 Borrar todo</button>
-    </div>` : "";
+  const acciones = total>0 ? `<div class="actions">
+    ${done>0?`<button class="btn-clear-done" onclick="limpiarComprados()">✅ Quitar comprados</button>`:""}
+    <button class="btn-clear-all" onclick="limpiarTodo()">🗑 Borrar todo</button>
+  </div>` : "";
 
   const gs = grupos(state.productos);
-  const listaHTML = gs.length === 0
+  const listaHTML = gs.length===0
     ? `<div class="empty"><div class="emoji">🧺</div><p>La lista está vacía</p><small>Agrega productos con el micrófono o escribiendo</small></div>`
-    : gs.map(({sup, items}) => `
+    : gs.map(({sup,items})=>`
         <div style="margin-bottom:16px">
           <div class="group-label">
             <div class="dot" style="background:${sup.color}"></div>
             <span class="group-name" style="color:${sup.color}">${sup.icono} ${sup.nombre}</span>
             <span class="group-count">(${items.length})</span>
           </div>
-          ${items.map(p => `
-            <div class="product-row" style="border-left:4px solid ${sup.color}">
-              <input type="checkbox" ${p.comprado?'checked':''} onchange="toggleComprado(${p.id})" style="accent-color:${sup.color}"/>
-              <span class="product-name ${p.comprado?'done':''}">${p.nombre}</span>
-              <button class="btn-del" onclick="eliminarProducto(${p.id})">×</button>
-            </div>`).join("")}
+          ${items.map(p=>{
+            const editando = state.editandoId===p.id;
+            const editPanel = editando ? `
+              <div class="product-edit">
+                <div class="edit-label">✏️ Nombre</div>
+                <input id="edit-nombre-${p.id}" class="edit-field" type="text" value="${p.nombre.replace(/"/g,'&quot;')}" placeholder="Nombre del producto"/>
+                <div class="edit-label">📦 Cantidad</div>
+                <input id="edit-cantidad-${p.id}" class="edit-field" type="text" value="${(p.cantidad||'').replace(/"/g,'&quot;')}" placeholder="ej. 2, 500g, 1 bolsa"/>
+                <div class="edit-label">🏪 Supermercado</div>
+                <div class="sup-mini-row">
+                  ${state.supermercados.map(s=>`
+                    <button class="sup-mini" id="edit-sup-${p.id}" value="${s.id}"
+                      onclick="document.querySelectorAll('.sup-mini-btn-${p.id}').forEach(b=>b.style.background='white');this.style.background='${s.color}';this.style.color='white';state._editSupId${p.id}=${s.id}"
+                      style="border-color:${s.color};background:${p.supId===s.id?s.color:'white'};color:${p.supId===s.id?'white':s.color}">
+                      ${s.icono} ${s.nombre}</button>`).join("")}
+                </div>
+                <div class="edit-actions">
+                  <button class="btn-save-edit" onclick="guardarEdicionInline(${p.id})">✅ Guardar</button>
+                  <button class="btn-cancel-edit" onclick="state.editandoId=null;render()">Cancelar</button>
+                </div>
+              </div>` : "";
+            return `
+              <div class="product-row" style="border-left:4px solid ${sup.color}">
+                <div class="product-main">
+                  <input type="checkbox" ${p.comprado?'checked':''} onchange="toggleComprado(${p.id})" style="accent-color:${sup.color}"/>
+                  <span class="product-name ${p.comprado?'done':''}">${p.nombre}</span>
+                  ${p.cantidad?`<span class="product-qty" style="background:${sup.color}">x${p.cantidad}</span>`:''}
+                  <button class="btn-edit" onclick="toggleEditar(${p.id})">✏️</button>
+                  <button class="btn-del" onclick="eliminarProducto(${p.id})">×</button>
+                </div>
+                ${editPanel}
+              </div>`;
+          }).join("")}
         </div>`).join("");
 
-  return `
-    <div class="page">
-      <div class="card">
-        <div class="card-title">Agregar producto</div>
-        ${chipsHTML}
-      </div>
-      ${acciones}
-      ${listaHTML}
-    </div>`;
+  return `<div class="page">
+    <div class="card"><div class="card-title">Agregar producto</div>${inputArea}</div>
+    ${acciones}${listaHTML}
+  </div>`;
+}
+
+function guardarEdicionInline(id) {
+  const p = state.productos.find(x=>x.id===id);
+  if (!p) return;
+  const n = document.getElementById("edit-nombre-"+id)?.value.trim();
+  const c = document.getElementById("edit-cantidad-"+id)?.value.trim();
+  if (n) p.nombre = n;
+  p.cantidad = c||"";
+  // Detectar supermercado seleccionado
+  const supBtns = document.querySelectorAll(`[id^="edit-sup-${id}"]`);
+  supBtns.forEach(btn => {
+    if (btn.style.background && btn.style.background !== 'white' && btn.style.color === 'white') {
+      p.supId = parseInt(btn.value);
+    }
+  });
+  state.editandoId = null;
+  save(); render();
 }
 
 function renderCompra() {
-  const supsMencionados = [...new Set(state.productos.map(p => p.supId))].filter(id => supById(id));
-  const prods = state.filtroSup === "todos" ? state.productos : state.productos.filter(p => p.supId === state.filtroSup);
-  const gs = grupos(prods);
-  const done = state.productos.filter(p => p.comprado).length;
-
-  const filtros = supsMencionados.length > 1 ? `
+  const supsMencionados=[...new Set(state.productos.map(p=>p.supId))].filter(id=>supById(id));
+  const prods=state.filtroSup==="todos"?state.productos:state.productos.filter(p=>p.supId===state.filtroSup);
+  const gs=grupos(prods), done=state.productos.filter(p=>p.comprado).length;
+  const filtros = supsMencionados.length>1?`
     <div class="filter-row">
       <button class="chip" onclick="state.filtroSup='todos';render()"
         style="border-color:#7C3AED;background:${state.filtroSup==='todos'?'#7C3AED':'white'};color:${state.filtroSup==='todos'?'white':'#7C3AED'}">Todos</button>
-      ${supsMencionados.map(id => { const s=supById(id); return `
+      ${supsMencionados.map(id=>{const s=supById(id);return`
         <button class="chip" onclick="state.filtroSup=${id};render()"
           style="border-color:${s.color};background:${state.filtroSup===id?s.color:'white'};color:${state.filtroSup===id?'white':s.color}">
-          ${s.icono} ${s.nombre}
-        </button>`;}).join("")}
-    </div>` : "";
-
-  const listaHTML = gs.length === 0
+          ${s.icono} ${s.nombre}</button>`;}).join("")}
+    </div>`:"";
+  const listaHTML = gs.length===0
     ? `<div class="empty"><div class="emoji">🎉</div><p>¡Todo comprado!</p></div>`
-    : gs.map(({sup, items}) => {
-        const pend = items.filter(i => !i.comprado);
-        const hechos = items.filter(i => i.comprado);
+    : gs.map(({sup,items})=>{
+        const pend=items.filter(i=>!i.comprado), hechos=items.filter(i=>i.comprado);
         return `
           <div>
             <div class="shop-group-header" style="background:${sup.color}">${sup.icono} ${sup.nombre} — ${hechos.length}/${items.length}</div>
             <div class="shop-group-body">
-              ${pend.map(p => `
+              ${pend.map(p=>`
                 <div class="shop-row" onclick="toggleComprado(${p.id})">
                   <div class="circle empty-c" style="border-color:${sup.color}"></div>
                   <span class="shop-row-name">${p.nombre}</span>
+                  ${p.cantidad?`<span class="shop-qty" style="background:${sup.color}">x${p.cantidad}</span>`:''}
                 </div>`).join("")}
-              ${hechos.map(p => `
+              ${hechos.map(p=>`
                 <div class="shop-row done-row" onclick="toggleComprado(${p.id})">
                   <div class="circle filled" style="background:${sup.color}">✓</div>
                   <span class="shop-row-name done">${p.nombre}</span>
+                  ${p.cantidad?`<span class="shop-qty" style="background:#D1D5DB">x${p.cantidad}</span>`:''}
                 </div>`).join("")}
             </div>
-          </div>`;
-      }).join("");
-
-  return `
-    <div class="page">
-      ${filtros}
-      ${listaHTML}
-      ${done > 0 ? `<button class="btn-clear-bought" onclick="limpiarComprados()">✅ Quitar ${done} comprado${done>1?'s':''}</button>` : ""}
-    </div>`;
+          </div>`;}).join("");
+  return `<div class="page">${filtros}${listaHTML}
+    ${done>0?`<button class="btn-clear-bought" onclick="limpiarComprados()">✅ Quitar ${done} comprado${done>1?'s':''}</button>`:""}
+  </div>`;
 }
 
 function renderGestion() {
-  const sups = state.supermercados;
   return `
   <div class="header">
     <div class="header-row">
@@ -347,47 +388,35 @@ function renderGestion() {
     </div>
   </div>
   <div class="page">
-    ${sups.length === 0
-      ? `<div class="empty"><div class="emoji">🏪</div><p>No hay supermercados</p></div>`
-      : sups.map(s => `
+    ${state.supermercados.length===0
+      ?`<div class="empty"><div class="emoji">🏪</div><p>No hay supermercados</p></div>`
+      :state.supermercados.map(s=>`
           <div class="sup-row" style="border-left:5px solid ${s.color}">
             <span class="sup-icon">${s.icono}</span>
             <span class="sup-name">${s.nombre}</span>
             <div class="color-dot" style="background:${s.color}"></div>
             <button class="btn-del-sup" onclick="eliminarSup(${s.id})">×</button>
           </div>`).join("")}
-
     <div class="card" style="margin-top:16px">
       <div class="card-title">➕ Nuevo supermercado</div>
       <input id="inp-sup" type="text" placeholder="Nombre (ej. La Comer)"
-        value="${state.nuevoNombre}"
-        oninput="state.nuevoNombre=this.value"
-        onkeydown="if(event.key==='Enter')agregarSup()"
-        style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #e5e7eb;font-size:15px;outline:none"/>
-
+        style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #e5e7eb;font-size:15px;outline:none"
+        oninput="state.nuevoNombre=this.value" onkeydown="if(event.key==='Enter')agregarSup()"/>
       <div class="label">Icono</div>
       <div class="icon-grid">
-        ${ICONOS.map(ic => `
+        ${ICONOS.map(ic=>`
           <button class="icon-opt" onclick="state.nuevoIcono='${ic}';render()"
             style="border-color:${state.nuevoIcono===ic?'#7C3AED':'#e5e7eb'};background:${state.nuevoIcono===ic?'#F3E8FF':'white'}">${ic}</button>`).join("")}
       </div>
-
       <div class="label">Color</div>
       <div class="color-grid">
-        ${COLORES.map(c => `
+        ${COLORES.map(c=>`
           <button class="color-opt" onclick="state.nuevoColor='${c}';render()"
             style="background:${c};border:${state.nuevoColor===c?'3px solid #111':'2px solid transparent'}"></button>`).join("")}
       </div>
-
       <button class="btn-save" onclick="agregarSup()">Agregar supermercado</button>
     </div>
   </div>`;
-}
-
-function attachEvents() {
-  // input producto — restaurar valor si hay texto en memoria
-  const inp = document.getElementById("inp-producto");
-  if (inp) inp.addEventListener("input", e => {});
 }
 
 load();
@@ -395,8 +424,7 @@ render();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .catch(e => console.log('SW error', e));
+    navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW error', e));
   });
 }
 </script>
